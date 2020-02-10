@@ -31,19 +31,21 @@ module.exports = function () {
                         objectBuffer.add(obj);
                     });
                     if(objectBuffer.size() === bufferSize){
-                        console.log(`buffer size is ${bufferSize}`);
-                        console.log(`last object: ${JSON.stringify(objectBuffer.get()[bufferSize - 1])}`);
                         await _sendItems(objectBuffer.get());
                         objectBuffer.empty();
                     }
-                } catch (e) {
-                    console.error(e);
-                    console.log(`processing failed at event ${event}`);
+                } catch (err) {
+                    await _sendError.call(this, event, err);
                 }
             }
-        }
+        };
         async function _sendItems(objects){
             await superagent.post(egressUrl).set('Content-Type', 'application/json').send({objectType: "FinnhubTrade", items: objects});
+        }
+        async function _sendError(event, error){
+            await superagent.post(egressUrl).set('Content-Type', 'application/json').send({
+                objectType: "Error", items:[{timestamp: new Date().valueOf(), event: JSON.stringify(event), message: error.message, stack: error.stack}]
+            });
         }
     }
 };

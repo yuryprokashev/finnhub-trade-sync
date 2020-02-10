@@ -37,7 +37,6 @@ module.exports = function () {
         this.execute = function(){
             let finnhubSocketClient = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
             finnhubSocketClient.on("open", ()=>{
-                console.log("socket open");
                 subscriptions.forEach((symbol)=>{
                     _subscribe.call(finnhubSocketClient, symbol);
                 });
@@ -51,7 +50,6 @@ module.exports = function () {
         };
         function _subscribe(symbol) {
             this.send(JSON.stringify({type: "subscribe", symbol: symbol}));
-            console.log(`subscription to ${symbol} ok`);
         }
     }
 };

@@ -4,6 +4,6 @@
   },
   "egress": {
     "googleAppWebApi": "https://script.google.com/macros/s/AKfycbxtvCby67aObBYA-Mul9otmXrLKBHjkc7h3j12atB75Q54ItUA/exec",
-    "tradesBufferSize": 10
+    "tradesBufferSize": 100
   }
 }
