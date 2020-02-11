@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const TradeLoaderBuilderFactoryConstructor = require('./TradeLoaderBuilderFactory');
 const ObjectBufferBuilderFactoryConstructor = require("./ObjectBufferBuilderFactory");
 const SendTradesToGoogleScriptWebApiFactoryConstructor = require("./SendTradesToGoogleScriptWebApi");
