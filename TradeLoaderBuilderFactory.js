@@ -9,7 +9,7 @@ module.exports = function () {
      * @constructor
      */
     function TradeLoaderBuilder() {
-        var _token;
+        var _token, _errorApp;
         var _subscriptions = [];
         var _actions = [];
         this.setFinnhubToken = function (str) {
@@ -24,8 +24,12 @@ module.exports = function () {
             _actions.push(func);
             return this;
         };
+        this.setErrorApp = function(app){
+            _errorApp = app;
+            return this;
+        };
         this.build = function () {
-            return new TradeLoader(_token, _subscriptions, _actions);
+            return new TradeLoader(_token, _subscriptions, _actions, _errorApp);
         };
     }
 
@@ -33,7 +37,7 @@ module.exports = function () {
      *
      * @constructor
      */
-    function TradeLoader(token, subscriptions, actions) {
+    function TradeLoader(token, subscriptions, actions, errorApp) {
         this.execute = function(){
             let finnhubSocketClient = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
             finnhubSocketClient.on("open", ()=>{
@@ -46,6 +50,9 @@ module.exports = function () {
                 actions.forEach((action)=>{
                     action(data);
                 });
+            });
+            finnhubSocketClient.on("error", (error)=>{
+                errorApp.save(error);
             });
         };
         function _subscribe(symbol) {
