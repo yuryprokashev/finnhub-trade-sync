@@ -11,12 +11,13 @@ module.exports = function(){
      */
     function ErrorAppBuilder(){
         var _httpEndpoint;
-        this.setHttpEndpoint= function(url){
+        this.setHttpEndpoint = function(url){
             _httpEndpoint = url;
             return this;
         };
         this.build = function(){
-            if(_httpEndpoint) return new HttpErrorApp(_httpEndpoint);
+            if(!_httpEndpoint) throw new Error("Http Endpoint is undefined");
+            return new HttpErrorApp(_httpEndpoint);
         }
     }
 

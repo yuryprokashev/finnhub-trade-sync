@@ -6,7 +6,7 @@ const ErrorAppBuilderFactoryConstructor = require("./ErrorAppBuilderFactory");
 const fs = require("fs");
 
 let tradeSyncConfig = JSON.parse(fs.readFileSync("../finnhub-trade-sync-config.json", {encoding: "UTF-8"}));
-var errorApp = new ErrorAppBuilderFactoryConstructor().getBuilder().setHttpEndpoint(tradeSyncConfig.egress.url).build();
+var errorApp = new ErrorAppBuilderFactoryConstructor().getBuilder().setHttpEndpoint(tradeSyncConfig.egress.googleAppWebApi).build();
 let finnhubToken = fs.readFileSync("../finnhub-token", {encoding: "UTF-8"});
 let objectBuffer = new ObjectBufferBuilderFactoryConstructor().getBuilder().build();
 let sendTrades = new SendTradesToGoogleScriptWebApiFactoryConstructor().getBuilder()
