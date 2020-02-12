@@ -36,7 +36,7 @@ module.exports = function () {
                     });
                     if(objectBuffer.size() === bufferSize){
                         let response = await _sendItems(objectBuffer.get());
-                        if(response.indexOf("error") !== -1) console.log(response);
+                        if(response.text.indexOf("error") !== -1) console.log(response);
                         objectBuffer.empty();
                     }
                 } catch (err) {
