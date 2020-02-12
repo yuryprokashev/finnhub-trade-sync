@@ -35,7 +35,8 @@ module.exports = function () {
                         objectBuffer.add(obj);
                     });
                     if(objectBuffer.size() === bufferSize){
-                        await _sendItems(objectBuffer.get());
+                        let response = await _sendItems(objectBuffer.get());
+                        if(response.indexOf("error") !== -1) console.log(response);
                         objectBuffer.empty();
                     }
                 } catch (err) {
@@ -44,7 +45,7 @@ module.exports = function () {
             }
         };
         async function _sendItems(objects){
-            await superagent.post(egressUrl).set('Content-Type', 'application/json').send({objectType: "FinnhubTrade", items: objects});
+            return await superagent.post(egressUrl).set('Content-Type', 'application/json').send({objectType: "FinnhubTrade", items: objects});
         }
     }
 };
