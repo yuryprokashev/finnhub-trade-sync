@@ -16,6 +16,10 @@ let sendTrades = new SendTradesToGoogleScriptWebApiFactoryConstructor().getBuild
     .setErrorApp(errorApp)
     .build();
 
+function logTrade(data){
+    console.log(data);
+}
+
 var tradeLoaderBuilder = new TradeLoaderBuilderFactoryConstructor().getBuilder().setFinnhubToken(finnhubToken).setErrorApp(errorApp);
 tradeSyncConfig.ingress.subscriptions.split("|").forEach(function (symbol) {
     tradeLoaderBuilder.addSymbol(symbol);

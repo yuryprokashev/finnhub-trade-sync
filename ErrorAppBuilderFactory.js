@@ -28,7 +28,7 @@ module.exports = function(){
      */
     function HttpErrorApp(httpEndpoint) {
         this.save = async function(error, context){
-            superagent.post(httpEndpoint).set('Content-Type', 'application/json').send({
+            await superagent.post(httpEndpoint).set('Content-Type', 'application/json').send({
                 objectType: "Error", items:[{timestamp: new Date().valueOf(), event: JSON.stringify(context), message: error.message, stack: error.stack}]
             });
         };
