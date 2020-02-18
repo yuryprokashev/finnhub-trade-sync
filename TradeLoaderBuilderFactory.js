@@ -38,21 +38,25 @@ module.exports = function () {
      * @constructor
      */
     function TradeLoader(token, subscriptions, actions, errorApp) {
-        this.execute = function(){
+        this.execute = async function(){
             let finnhubSocketClient = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
             finnhubSocketClient.on("open", ()=>{
                 subscriptions.forEach((symbol)=>{
                     _subscribe.call(finnhubSocketClient, symbol);
                 });
             });
-            finnhubSocketClient.on("close", ()=>{console.log("socket close")});
+            finnhubSocketClient.on("close", ()=>{console.log("The Finnhub server closed the connection;")});
             finnhubSocketClient.on("message", (data)=>{
-                actions.forEach((action)=>{
-                    action(data);
+                actions.forEach(async (action)=>{
+                    try {
+                        await action(data);
+                    } catch (e) {
+                        await errorApp.save(e, data);
+                    }
                 });
             });
-            finnhubSocketClient.on("error", (error)=>{
-                errorApp.save(error);
+            finnhubSocketClient.on("error", async (error)=>{
+                await errorApp.save(error);
             });
         };
         function _subscribe(symbol) {

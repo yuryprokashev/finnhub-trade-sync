@@ -4,6 +4,11 @@ module.exports = function () {
     this.getBuilder = function () {
         return new SendTradesToGoogleScriptWebApiBuilder();
     };
+
+    /**
+     *
+     * @constructor
+     */
     function SendTradesToGoogleScriptWebApiBuilder() {
         var _objectBuffer, _egressUrl, _errorApp, _bufferSize = 10;
         this.setObjectBuffer = function (objectBuffer) {
@@ -26,17 +31,26 @@ module.exports = function () {
             return new SendTradesToGoogleScriptWebApi(_objectBuffer, _egressUrl, _bufferSize, _errorApp);
         };
     }
+
+    /**
+     *
+     * @param objectBuffer
+     * @param egressUrl
+     * @param bufferSize
+     * @param errorApp
+     * @constructor
+     */
     function SendTradesToGoogleScriptWebApi(objectBuffer, egressUrl, bufferSize, errorApp) {
         this.execute = async function (event) {
             var eventObject = JSON.parse(event);
             if(eventObject.type === "trade"){
                 try {
                     JSON.parse(event).data.forEach((obj)=> {
+                        obj.received = new Date().valueOf();
                         objectBuffer.add(obj);
                     });
                     if(objectBuffer.size() === bufferSize){
-                        let response = await _sendItems(objectBuffer.get());
-                        if(response.text.indexOf("error") !== -1) console.log(response);
+                        await _sendItems(objectBuffer.get());
                         objectBuffer.empty();
                     }
                 } catch (err) {
@@ -45,7 +59,14 @@ module.exports = function () {
             }
         };
         async function _sendItems(objects){
-            return await superagent.post(egressUrl).set('Content-Type', 'application/json').send({objectType: "FinnhubTrade", items: objects});
+            let response = await superagent.post(egressUrl)
+                .set('Content-Type', 'application/json')
+                .send({objectType: "FinnhubTrade", items: objects});
+            if(response.text.indexOf("error") !== -1) logErrorMessageAndStack(response.text);
+        }
+        function logErrorMessageAndStack(responseText) {
+            let responseTextObject = JSON.parse(responseText);
+            console.error(`Error!\nSender: ${responseTextObject.sender};\nMessage: ${responseTextObject.message};\nStack: ${responseTextObject.stack}`);
         }
     }
 };
