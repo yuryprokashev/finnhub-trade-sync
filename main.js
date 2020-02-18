@@ -27,7 +27,7 @@ tradeSyncConfig.ingress.subscriptions.split("|").forEach(function (symbol) {
 
 (async function main(){
     try {
-        tradeLoaderBuilder.addAction(sendTrades.execute).build().execute();
+        await tradeLoaderBuilder.addAction(sendTrades.execute).build().execute();
     } catch (e) {
         await errorApp.save(e);
     }
