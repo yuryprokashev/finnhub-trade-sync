@@ -65,6 +65,10 @@ module.exports = function () {
             if(response.text.indexOf("error") !== -1) logErrorMessageAndStack(response.text);
         }
         function logErrorMessageAndStack(responseText) {
+            if(responseText.indexOf("<") === 0) {
+                console.log(`Error!\nHTML in HTTP response when JSON is expected.\n${responseText}`);
+                return;
+            }
             let responseTextObject = JSON.parse(responseText);
             console.error(`Error!\nSender: ${responseTextObject.sender};\nMessage: ${responseTextObject.message};\nStack: ${responseTextObject.stack}`);
         }
