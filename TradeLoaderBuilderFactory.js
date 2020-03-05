@@ -41,11 +41,12 @@ module.exports = function () {
         this.execute = async function(){
             let finnhubSocketClient = new WebSocket(`wss://ws.finnhub.io?token=${token}`);
             finnhubSocketClient.on("open", ()=>{
+                console.log("Opened connection to Finnhub server");
                 subscriptions.forEach((symbol)=>{
                     _subscribe.call(finnhubSocketClient, symbol);
                 });
             });
-            finnhubSocketClient.on("close", ()=>{console.log("The Finnhub server closed the connection;")});
+            finnhubSocketClient.on("close", (code, reason)=>{console.log(`The Finnhub server closed the connection: code is ${code} reason is ${reason}`)});
             finnhubSocketClient.on("message", (data)=>{
                 actions.forEach(async (action)=>{
                     try {
